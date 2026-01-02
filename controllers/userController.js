@@ -1,4 +1,5 @@
 const Notification = require("../models/Notification");
+const cloudinary = require("../config/cloudinary");
 
 const User = require("../models/User");
 
@@ -181,4 +182,96 @@ exports.updateProfile = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+// @desc    Upload profile picture
+// @route   PUT /api/users/profile-pic
+// @access  Private
+exports.uploadProfilePic = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No image uploaded" });
+    }
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "devconnect/profile-pics",
+    });
+
+    const user = await User.findById(req.user.id);
+    user.profilePic = result.secure_url;
+
+    await user.save();
+
+    res.json({
+      message: "Profile picture updated successfully",
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get public user profile
+// @route   GET /api/users/:id
+// @access  Private
+exports.getPublicProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select("-password")
+      .populate("followers", "name profilePic")
+      .populate("following", "name profilePic");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isFollowing = user.followers.some(
+      (f) => f._id.toString() === req.user.id
+    );
+
+    res.json({
+      user,
+      followersCount: user.followers.length,
+      followingCount: user.following.length,
+      isFollowing,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update username
+// @route   PUT /api/users/username
+// @access  Private
+exports.updateUsername = async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+
+    const normalized = username.toLowerCase().trim();
+
+    // check if taken by someone else
+    const existing = await User.findOne({
+      username: normalized,
+      _id: { $ne: req.user.id },
+    });
+
+    if (existing) {
+      return res.status(409).json({ message: "Username already taken" });
+    }
+
+    const user = await User.findById(req.user.id);
+    user.username = normalized;
+    await user.save();
+
+    res.json({
+      message: "Username updated successfully",
+      username: user.username,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

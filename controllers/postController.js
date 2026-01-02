@@ -125,3 +125,38 @@ exports.addComment = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+// @desc    Edit a post
+// @route   PUT /api/posts/:id
+// @access  Private
+exports.editPost = async (req, res) => {
+  try {
+    const { content } = req.body;
+
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: "Post content is required" });
+    }
+
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // ownership check
+    if (post.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized to edit this post" });
+    }
+
+    post.content = content.trim();
+    await post.save();
+
+    res.json({
+      message: "Post updated successfully",
+      post,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -38,6 +38,20 @@ const userSchema = new mongoose.Schema(
                 ref: "User",
             },
         ],
+
+        profilePic: {
+            type: String,
+            default: "",
+        },
+
+        username: {
+            type: String,
+            unique: true,
+            lowercase: true,
+            trim: true,
+        },
+
+
     },
     { timestamps: true }
 );
