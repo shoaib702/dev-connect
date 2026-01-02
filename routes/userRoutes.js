@@ -2,6 +2,7 @@ const express = require("express");
 const protect = require("../middleware/authMiddleware");
 const {
     getMyProfile,
+    updateProfile,
     toggleFollow,
     getFollowers,
     getFollowing,
@@ -12,6 +13,7 @@ const {
 const router = express.Router();
 
 router.get("/me", protect, getMyProfile);
+router.put("/update", protect, updateProfile);
 router.put("/:id/follow", protect, toggleFollow);
 router.get("/:id/followers", protect, getFollowers);
 router.get("/:id/following", protect, getFollowing);

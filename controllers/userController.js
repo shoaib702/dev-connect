@@ -152,3 +152,33 @@ exports.getNotifications = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+// @desc    Update logged-in user profile
+// @route   PUT /api/users/update
+// @access  Private
+exports.updateProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const { bio, skills, github, linkedin } = req.body;
+
+        if (bio !== undefined) user.bio = bio;
+        if (skills !== undefined) user.skills = skills;
+        if (github !== undefined) user.github = github;
+        if (linkedin !== undefined) user.linkedin = linkedin;
+
+        await user.save();
+
+        res.json({
+            message: "Profile updated successfully",
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
