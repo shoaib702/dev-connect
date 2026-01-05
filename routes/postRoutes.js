@@ -1,23 +1,23 @@
 const express = require("express");
 const protect = require("../middleware/authMiddleware");
-const { editPost } = require("../controllers/postController");
-
 const {
-    createPost,
-    getPosts,
-    toggleLike,
-    deletePost,
-    addComment,
+  createPost,
+  getPosts,
+  toggleLike,
+  addComment,
+  editPost,
+  deletePost,
+  getPostById,
 } = require("../controllers/postController");
 
 const router = express.Router();
 
-router.post("/", protect, createPost); // 👈 THIS LINE for Creating the posts
-router.get("/", protect, getPosts);  // 👈 THIS LINE for Getting the posts
-router.put("/:id/like", protect, toggleLike); // 👈 THIS LINE for Liking the posts
-router.delete("/:id", protect, deletePost); // 👈 For deleting Lines
-router.post("/:id/comment", protect, addComment);  // 👈 For adding comments to the posts
-router.put("/:id", protect, editPost); // 👈 For editing the posts
-
+router.post("/", protect, createPost);
+router.get("/", protect, getPosts);
+router.get("/:id", protect, getPostById);
+router.put("/:id/like", protect, toggleLike);
+router.post("/:id/comment", protect, addComment);
+router.put("/:id", protect, editPost);
+router.delete("/:id", protect, deletePost);
 
 module.exports = router;
