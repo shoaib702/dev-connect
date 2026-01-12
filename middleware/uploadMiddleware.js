@@ -1,16 +1,22 @@
 const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
-const storage = multer.diskStorage({});
+// ensure uploads folder exists
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Please upload an image"), false);
-    }
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir); // 👈 THIS WAS MISSING
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
+
+const upload = multer({ storage });
 
 module.exports = upload;

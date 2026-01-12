@@ -1,34 +1,48 @@
-const dotenv = require("dotenv").config(); // 👈 FIRST LINE
 const express = require("express");
-const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors"); // ✅ ADD THIS
 const connectDB = require("./config/db");
+require("dotenv").config();
+require("./config/cloudinary"); // 👈 ADD THIS
+const app = express();
+const server = http.createServer(app);
 
-const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
-const postRoutes = require("./routes/postRoutes");
+// ✅ EXPRESS CORS (THIS WAS MISSING)
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-//dotenv.config();
+app.use(express.json());
 connectDB();
 
-const app = express();
-
-/* 🔥 THIS MUST COME BEFORE ROUTES */
-app.use(express.json());   // 👈 MOST IMPORTANT
-app.use(cors());
-
-/* 🔥 ROUTES AFTER JSON */
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
-
-app.get("/", (req, res) => {
-    res.send("DevConnect API Running");
+// socket.io (ye already sahi tha)
+const io = new Server(server, {
+  cors: { origin: "http://localhost:5173" },
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const onlineUsers = new Map();
+
+io.on("connection", (socket) => {
+  socket.on("addUser", (userId) => {
+    onlineUsers.set(userId, socket.id);
+  });
+
+  socket.on("disconnect", () => {
+    for (let [k, v] of onlineUsers) {
+      if (v === socket.id) onlineUsers.delete(k);
+    }
+  });
 });
 
-require("dotenv").config();
+app.set("io", io);
+app.set("onlineUsers", onlineUsers);
 
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/posts", require("./routes/postRoutes"));
+
+server.listen(5000, () => console.log("Server running"));
