@@ -1,0 +1,111 @@
+/* ========================================
+   FEED PAGE
+   ======================================== */
+
+.feed-container {
+    max-width: var(--max-width-md);
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+/* 📝 POST CREATION CARD */
+.create-post-card {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    transition: box-shadow var(--transition-base);
+}
+
+.create-post-card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.create-post-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.create-post-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-primary);
+    object-fit: cover;
+}
+
+.create-post-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    background: var(--bg-tertiary);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    resize: vertical;
+    transition: all var(--transition-base);
+}
+
+.create-post-textarea:focus {
+    outline: none;
+    background: var(--bg-secondary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.create-post-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.create-post-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+/* 📰 POSTS FEED */
+.posts-feed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.feed-empty {
+    text-align: center;
+    padding: var(--spacing-3xl) var(--spacing-lg);
+    color: var(--text-muted);
+}
+
+.feed-empty-icon {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.feed-empty-text {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Loading State */
+.feed-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-3xl);
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 640px) {
+    .feed-container {
+        padding: var(--spacing-md);
+    }
+
+    .create-post-card {
+        padding: var(--spacing-md);
+    }
+}
