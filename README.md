@@ -13,11 +13,11 @@ This repository follows a **monorepo structure** with a Node.js + Express backen
 
 ## 🧱 Project Structure
 
-```
+
 dev-connect
 ├── devconnect-backend   # Backend (Node.js + Express + MongoDB)
 └── devconnect-frontend  # Frontend (React + Vite)
-````
+
 
 ---
 
