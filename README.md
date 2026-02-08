@@ -1,7 +1,4 @@
-Perfect 👍
-Chalo **killer README.md** bana dete hain — **copy-paste ready**, professional, recruiter-friendly.
 
----
 
 ## 📄 **README.md (Root – `dev-connect`)**
 
