@@ -95,3 +95,25 @@ exports.uploadProfilePic = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// SEARCH USERS BY NAME
+// GET /api/users/search?q=searchQuery
+exports.searchUsers = async (req, res) => {
+  try {
+    const searchQuery = req.query.q;
+
+    if (!searchQuery) {
+      return res.json([]);
+    }
+
+    const users = await User.find({
+      name: { $regex: searchQuery, $options: 'i' }
+    })
+      .select('name profilePic bio')
+      .limit(10);
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

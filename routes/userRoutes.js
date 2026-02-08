@@ -7,12 +7,14 @@ const {
   toggleFollow,
   getPublicProfile,
   uploadProfilePic,
+  searchUsers,
 } = require("../controllers/userController");
 
 const router = express.Router();
 
 router.get("/me", protect, getMyProfile);
 router.put("/update", protect, updateProfile);
+router.get("/search", protect, searchUsers);
 
 // ✅ PROFILE PHOTO UPLOAD ROUTE
 router.put(
@@ -20,7 +22,7 @@ router.put(
   protect,
   upload.single("image"),
   uploadProfilePic
-);  
+);
 
 
 router.put("/:id/follow", protect, toggleFollow);
